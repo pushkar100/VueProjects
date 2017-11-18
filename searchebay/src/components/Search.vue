@@ -4,8 +4,10 @@
 		<input type="text" v-model="searchTerm" placeholder="Search input..." class="search-input">
 		<input type="submit" value="Search ebay" class="search-submit">
 	</form>
-	<Filters v-bind:searchResults="searchResults"></Filters>
-	<Results v-bind:searchResults="searchResults"></Results>
+	<!-- Filters receive the full response from API (searchResults) -->
+	<Filters v-on:filterTheSearch="filterResults" v-bind:searchResults="searchResults"></Filters>
+	<!-- Results receive only filtered results (filteredResults) -->
+	<Results v-bind:filteredResults="filteredResults"></Results>
   </div>
 </template>
 
@@ -19,8 +21,7 @@ export default {
     return {
     	searchTerm: '',
     	searchResults: [],
-    	limitResults: 10,
-    	offset: 0,
+    	filteredResults: [],
     	appToken: ''
     }
   },
@@ -29,11 +30,25 @@ export default {
   	Filters: Filters
   },
   created() {
-  	this.$http.get('http://pushkardk.com/searchebay/get-app-token.php')
+  	let _appToken = sessionStorage.getItem('appToken'),
+  		_expiry   = sessionStorage.getItem('expiry'),
+  		_hasExpired = _expiry > Date.now();
+
+  	if(_appToken && !_hasExpired) {
+  		this.appToken = _appToken;
+  		console.log('Session storage App Key used');
+  	} else {
+  		let expiry = new Date();
+  		expiry.setMinutes(expiry.getMinutes() + 20); // 20 minutes
+
+  		this.$http.get('http://pushkardk.com/searchebay/get-app-token.php')
   		.then(response => {
   			this.appToken = JSON.parse(response.body).access_token;
-  			console.log(this.appToken);
+  			sessionStorage.setItem('appToken', this.appToken);
+  			sessionStorage.setItem('expiry', expiry);
+  			console.log('HTTP Response to get App Key made, Saved into session storage');
   		});
+  	}
   },
   methods: {
   	searchItems(e) {
@@ -47,11 +62,13 @@ export default {
   				}
   			)
   			.then(response => {
-  				console.log('received');
+  				console.log('Items received');
   				this.searchResults = [];
+  				this.filteredResults = [];
   				response.body.itemSummaries.forEach(item => {
   					let itemData = this.getItemData(item);
   					this.searchResults.push(itemData);
+  					this.filteredResults.push(itemData);
   				})
   			})
   		} else {
@@ -69,8 +86,8 @@ export default {
   			itemWebUrl: item.itemWebUrl
   		}
   	},
-  	filterTheSearch(filteredList) {
-  		console.log(filteredList);
+  	filterResults(filteredList) {
+  		this.filteredResults = filteredList;
   	}
   }
 }

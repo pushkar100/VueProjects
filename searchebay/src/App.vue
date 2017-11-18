@@ -68,9 +68,23 @@ body {
   line-height: 1.3;
 }
 
+.main-header {
+  width: 1190px;
+  font-size: 30px;
+  margin: 10px auto;
+}
+
+.logo-one {
+  color: #2980b9;
+}
+
+.logo-two {
+  color: #2c3e50;
+}
+
 #app {
   width: 1158px;
-  margin: 50px auto;
+  margin: 50px auto 10px auto;
   position: absolute;
   top: 0;
   left: 0;

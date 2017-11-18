@@ -1,6 +1,19 @@
 <template>
   <div class="results">
-    <div v-for="item in searchResults" class="search-results">
+    <div class="results-applied-filter">
+      <label class="applied-filter-item">
+        <input v-on:click="sortByPrice" type="radio" name="applied-filter" value="1"> Price: Low to High</label>
+      <label class="applied-filter-item">
+        <input v-on:click="sortByPrice" type="radio" name="applied-filter" value="-1"> Price: High to Low
+      </label>
+      <label class="applied-filter-item">
+        <input v-on:click="sortByScore" type="radio" name="applied-filter" value="1"> Score: Low to High
+      </label>
+      <label class="applied-filter-item">
+        <input v-on:click="sortByScore" type="radio" name="applied-filter" value="-1"> Score: High to Low
+      </label>
+    </div>
+    <div v-for="item in filteredResults" class="search-results">
       <div class="search-results-item">
         <div class="clearfix">
           <div class="search-results-item-img-wrpr">
@@ -27,9 +40,33 @@
 <script>
 export default {
   name: 'Results',
-  props: ['searchResults'],
+  props: ['filteredResults'],
   data() {
     return {}
+  },
+  methods: {
+    sortByPrice(e) {
+      if(Number(e.target.value) === 1) {
+        this.filteredResults.sort((a, b) => {
+          return Number(a.currentBidPrice.value) - Number(b.currentBidPrice.value);
+        });
+      } else {
+        this.filteredResults.sort((a, b) => {
+          return Number(b.currentBidPrice.value) - Number(a.currentBidPrice.value);
+        });
+      }
+    },
+    sortByScore(e) {
+      if(Number(e.target.value) === 1) {
+        this.filteredResults.sort((a, b) => {
+          return Number(a.seller.feedbackPercentage) - Number(b.seller.feedbackPercentage);
+        });
+      } else {
+        this.filteredResults.sort((a, b) => {
+          return Number(b.seller.feedbackPercentage) - Number(a.seller.feedbackPercentage);
+        });
+      }
+    }
   }
 }
 </script>
@@ -75,14 +112,14 @@ export default {
   float: left;
   font-size: 18px;
   color: #34495e;
-  min-width: 85%;
+  width: 85%;
 }
 
 .search-results-item-id {
   margin-top: 5px;
   float: left;
   font-size: 11px;
-  min-width: 85%;
+  width: 85%;
 }
 
 .search-results-item-condition {
@@ -140,5 +177,13 @@ text-decoration: none;
   padding: 40px 0;
   text-align: center;
   color: #444;
+}
+
+.results-applied-filter {
+  margin-top: 15px;
+}
+
+.applied-filter-item {
+  margin-right: 30px;
 }
 </style>
