@@ -1,6 +1,7 @@
 <template>
   <div class="results">
-    <div class="results-applied-filter">
+
+    <div v-if="filteredResults.length" class="results-applied-filter">
       <label class="applied-filter-item">
         <input v-on:click="sortByPrice" type="radio" name="applied-filter" value="1"> Price: Low to High</label>
       <label class="applied-filter-item">
@@ -13,6 +14,13 @@
         <input v-on:click="sortByScore" type="radio" name="applied-filter" value="-1"> Score: High to Low
       </label>
     </div>
+
+    <div v-if="filteredResults.length === limit" class="clearfix paginate">
+      <div v-on:click="prevOffset()" v-if="offset" class="filter-prev">&#10229; Prev</div>
+      <div v-on:click="nextOffset()" v-if="offset != (total - offset)" class="filter-next">Next &#10230;</div>
+      <div class="results-info">Showing {{offset}}-{{offset + limit}} out of {{total}} results</div>
+    </div>
+
     <div v-for="item in filteredResults" class="search-results">
       <div class="search-results-item">
         <div class="clearfix">
@@ -30,17 +38,20 @@
         <div class="clearfix">
           <span class="search-results-item-price">{{item.currentBidPrice.currency}} {{item.currentBidPrice.value}}</span>
           <a :href="item.itemWebUrl" target="_blank" class="search-results-item-buy">Buy</a>
-          <span class="search-results-item-view">View Details</span>
+          <span class="search-results-item-view">
+            <router-link :to="{ name: 'Item', params: { id: item.itemId }}" class="route-link">View Details</router-link>
+          </span>
         </div>
       </div>
     </div>
+
   </div>
 </template>
 
 <script>
 export default {
   name: 'Results',
-  props: ['filteredResults'],
+  props: ['filteredResults', 'offset', 'total', 'limit'],
   data() {
     return {}
   },
@@ -66,6 +77,12 @@ export default {
           return Number(b.seller.feedbackPercentage) - Number(a.seller.feedbackPercentage);
         });
       }
+    },
+    nextOffset() {
+      this.$emit('updateOffset', this.offset + this.limit);
+    },
+    prevOffset() {
+      this.$emit('updateOffset', this.offset - this.limit);
     }
   }
 }
@@ -181,9 +198,44 @@ text-decoration: none;
 
 .results-applied-filter {
   margin-top: 15px;
+  background: #ecf0f1;
+  padding: 5px;
+  border-radius: 5px;
 }
 
 .applied-filter-item {
   margin-right: 30px;
+}
+
+.paginate {
+  margin: 10px 0;
+}
+
+.filter-prev {
+  float: left;
+  border: 1px solid #2c3e50;
+  color: #2c3e50;
+  padding: 5px 7px;
+  cursor: pointer;
+}
+
+.filter-next {
+  float: right;
+  border: 1px solid #2c3e50;
+  color: #2c3e50;
+  padding: 5px 7px;
+  cursor: pointer;
+}
+
+.results-info {
+  text-align: center;
+  font-size: 13px;
+  padding-top: 5px;
+  color: #95a5a6;
+}
+
+.route-link {
+  text-decoration: none;
+  color: #444;
 }
 </style>

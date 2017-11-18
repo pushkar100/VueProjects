@@ -16,6 +16,11 @@ export default new Router({
     	path: '/item/:id',
     	name: 'Item',
     	component: Item
+    },
+    {
+      path: '/l/:limit/o/:offset/f/:filters',
+      name: 'SearchWithParams',
+      component: Search
     }
   ]
 })

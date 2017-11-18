@@ -16,6 +16,9 @@
       <a :href="itemData.buy" target="_blank" class="item-buy">Buy</a>
     </div>
     <div class="clearfix">
+      <div class="image-wrapper">
+        <img :src="itemData.image.imageUrl" alt="">
+      </div>
       <div v-for="images in itemData.additionalImages" class="image-wrapper">
         <img :src="images.imageUrl" alt="">
       </div>
@@ -68,6 +71,7 @@ export default {
         this.itemData = {
           itemId: item.itemId,
           buy: item.itemWebUrl,
+          image: item.image,
           title: item.title,
           brand: item.brand,
           condition: item.condition,
@@ -136,12 +140,12 @@ export default {
 
 .image-wrapper img {
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  top: -100%;
+  left: -100%;
+  right: -100%;
+  bottom: -100%;
   max-width: 90%;
   max-height: 90%;
-  margin: 18px auto;
+  margin: auto;
 }
 </style>

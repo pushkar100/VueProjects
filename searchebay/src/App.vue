@@ -1,5 +1,6 @@
 <template>
   <div id="app">
+    <div class="loader">Loading...</div>
     <!-- Navigation -->
     <router-view></router-view>
   </div>
@@ -102,5 +103,18 @@ body {
   content: "";
   display: table;
   clear: both;
+}
+
+.loader {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  text-align: center;
+  line-height: 650px;
+  background: rgba(255, 255, 255, 0.5);
+  color: #2980b9;
+  display: none;
 }
 </style>
