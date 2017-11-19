@@ -1,6 +1,5 @@
 <template>
   <div v-if="searchResults.length" class="filters">
-    {{priceUrlParam}}
     <div class="filter-div price-filter">
       <h2 class="filter-hdr price-filter-hdr">Price Filter</h2>
       <div v-for="value in allPriceCaps">
@@ -27,7 +26,7 @@
 <script>
 export default {
   name: 'Filters',
-  props: ['searchResults', 'priceUrlParam'],
+  props: ['searchResults'],
   data() {
     return {
       allPriceCaps: [ 10, 20, 50, 100, 200, 500, 1000, 1000000000 ], // The prices on filter

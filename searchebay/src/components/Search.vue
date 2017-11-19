@@ -5,9 +5,9 @@
 		<input type="submit" value="Search ebay" class="search-submit">
 	</form>
 	<!-- Filters receive the full response from API (searchResults) -->
-	<Filters v-on:filterTheSearch="filterResults" v-bind:searchResults="searchResults" v-bind:priceCheck="priceUrlParam"></Filters>
+	<Filters v-on:filterTheSearch="filterResults" v-bind:searchResults="searchResults"></Filters>
 	<!-- Results receive only filtered results (filteredResults) -->
-	<Results v-on:updateOffset="pagination" v-bind:filteredResults="filteredResults" v-bind:limit="limit" v-bind:offset="offset" v-bind:total="total" v-bind:priceUrlParam="priceUrlParam"></Results>
+	<Results v-on:updateOffset="pagination" v-bind:filteredResults="filteredResults" v-bind:limit="limit" v-bind:offset="offset" v-bind:total="total"></Results>
   </div>
 </template>
 
@@ -26,7 +26,6 @@ export default {
     	limit: 50,
     	offset: 0,
     	total: undefined,
-    	priceUrlParam: undefined,
     	cachedRequests: {},
     	cacheHash: undefined,
     	path: '/'
@@ -77,7 +76,6 @@ export default {
 	  	if(routeParams.q) {
 	  		console.log('Initial search!');
 	  		this.searchTerm = routeParams.q || this.searchTerm;
-	  		this.priceUrlParam = Number(routeParams.price) || this.priceUrlParam;
 	  		// Make the call to API (or cache):
 	  		this.fetchAndUseData();
 	  	} else {
@@ -93,7 +91,6 @@ export default {
   				params: {
   					q: this.searchTerm,
   					offset: this.offset,
-  					price: this.priceUrlParam || 1000000000,
   					condition: 'none',
   					sellers: 'none'
   				}
