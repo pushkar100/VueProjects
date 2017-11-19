@@ -67,7 +67,6 @@ export default {
         { headers: { 'Authorization': 'Bearer ' + this.appToken }}
       ).then(response => {
         let item = response.body;
-        console.log(item);
         this.itemData = {
           itemId: item.itemId,
           buy: item.itemWebUrl,

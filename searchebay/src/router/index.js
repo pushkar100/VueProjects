@@ -15,10 +15,11 @@ export default new Router({
     {
     	path: '/item/:id',
     	name: 'Item',
-    	component: Item
+    	component: Item,
+      props: true
     },
     {
-      path: '/l/:limit/o/:offset/f/:filters',
+      path: '/:q/:price/:condition/:sellers',
       name: 'SearchWithParams',
       component: Search
     }

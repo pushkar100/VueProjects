@@ -1,6 +1,5 @@
 <template>
   <div class="results">
-
     <div v-if="filteredResults.length" class="results-applied-filter">
       <label class="applied-filter-item">
         <input v-on:click="sortByPrice" type="radio" name="applied-filter" value="1"> Price: Low to High</label>

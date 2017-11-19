@@ -5,9 +5,9 @@
 		<input type="submit" value="Search ebay" class="search-submit">
 	</form>
 	<!-- Filters receive the full response from API (searchResults) -->
-	<Filters v-on:filterTheSearch="filterResults" v-bind:setFilters="setFilterParams" v-bind:searchResults="searchResults"></Filters>
+	<Filters v-on:filterTheSearch="filterResults" v-bind:searchResults="searchResults" v-bind:priceCheck="priceUrlParam"></Filters>
 	<!-- Results receive only filtered results (filteredResults) -->
-	<Results v-on:updateOffset="pagination" v-bind:filteredResults="filteredResults" v-bind:limit="limit" v-bind:offset="offset" v-bind:total="total"></Results>
+	<Results v-on:updateOffset="pagination" v-bind:filteredResults="filteredResults" v-bind:limit="limit" v-bind:offset="offset" v-bind:total="total" v-bind:priceUrlParam="priceUrlParam"></Results>
   </div>
 </template>
 
@@ -26,9 +26,10 @@ export default {
     	limit: 50,
     	offset: 0,
     	total: undefined,
-    	setFilterParams: undefined,
+    	priceUrlParam: undefined,
     	cachedRequests: {},
-    	cacheHash: undefined
+    	cacheHash: undefined,
+    	path: '/'
     }
   },
   components: {
@@ -36,6 +37,7 @@ export default {
   	Filters: Filters
   },
   created() {
+  	this.showLoader(); // Add loader if it is taking time!
   	/* 1. Fetch app token */
   	let _appToken = sessionStorage.getItem('appToken'),
         _expiry   = new Date(sessionStorage.getItem('expiry')),
@@ -44,35 +46,58 @@ export default {
   	if(_appToken && !_hasExpired) {
   		this.appToken = _appToken;
   		console.log('Session storage App Key used');
+  		this.initialSearch();
   	} else {
   		let expiry = new Date();
   		expiry.setMinutes(expiry.getMinutes() + 20); // 20 minutes
-
   		this.$http.get('http://pushkardk.com/searchebay/get-app-token.php')
-  		.then(response => {
-  			console.log(response);
-  			this.appToken = JSON.parse(response.body).access_token;
-  			sessionStorage.setItem('appToken', this.appToken);
-  			sessionStorage.setItem('expiry', expiry);
-  			console.log('HTTP Response to get App Key made, Saved into session storage');
-  		});
+  			.then(response => {
+	  			this.appToken = JSON.parse(response.body).access_token;
+	  			sessionStorage.setItem('appToken', this.appToken);
+	  			sessionStorage.setItem('expiry', expiry);
+	  			console.log('HTTP Response to get App Key made, Saved into session storage with expiry also being saved');
+	  			this.initialSearch();
+  			});
   	}
-
-  	/* 2. Find out if params were set */
-  	let routeParams = this.$route.params;
-  	if(routeParams) {
-  		this.setFilterParams = {
-  			limit: routeParams.limit,
-  			offset: routeParams.offset,
-  			filters: routeParams.filters
+  },
+  watch: {
+  	'$route' (to, from) {
+  		/* Whenever route does not change but only parameters change:
+  		   Complete initial search: */
+  		if(to.params.q != to.params.from) {
+  			this.initialSearch();
   		}
   	}
   },
   methods: {
+  	initialSearch() {
+  		/* 2. Find out if params were set */
+	  	let routeParams = this.$route.params;
+	  	this.path = this.$route.path;
+	  	if(routeParams.q) {
+	  		console.log('Initial search!');
+	  		this.searchTerm = routeParams.q || this.searchTerm;
+	  		this.priceUrlParam = Number(routeParams.price) || this.priceUrlParam;
+	  		// Make the call to API (or cache):
+	  		this.fetchAndUseData();
+	  	} else {
+	  		console.log('No initial search done!');
+	  		this.hideLoader(); // Add loader if it is taking time!
+	  	}
+	},
   	searchItems(e) {
   		e.preventDefault();
   		if(this.searchTerm) {
-  			this.fetchAndUseData();
+  			this.$router.push({ 
+  				name: 'SearchWithParams', 
+  				params: {
+  					q: this.searchTerm,
+  					offset: this.offset,
+  					price: this.priceUrlParam || 1000000000,
+  					condition: 'none',
+  					sellers: 'none'
+  				}
+  			});
   		} else {
   			alert('Enter a search term');
   		}
@@ -118,31 +143,37 @@ export default {
   	/* The update inner function: */
 	update(response) {
 		// Save response in cache if it doesn't already exist!
-		console.log(this, this.data);
 		this.cachedRequests[this.cacheHash] = this.cachedRequests[this.cacheHash] || response;
 		// Remaining updation: 
 		this.total = response.body.total;
 		this.searchResults = [];
 		this.filteredResults = [];
-		response.body.itemSummaries.forEach(item => {
-			let itemData = this.getItemData(item);
-			this.searchResults.push(itemData);
-			this.filteredResults.push(itemData);
-		});
+		if(response.body.itemSummaries) {
+			response.body.itemSummaries.forEach(item => {
+				let itemData = this.getItemData(item);
+				this.searchResults.push(itemData);
+				this.filteredResults.push(itemData);
+			});
+		} else {
+			alert('No items were returned by this query!');
+		}
 		this.hideLoader();  // Remove loader once data has been retrieved!
 	},
   	pagination(offset) {
-  		console.log(1);
   		this.offset = offset;
   		this.fetchAndUseData();
   	},
   	showLoader() {
   		let DOMloader = document.getElementsByClassName('loader');
-  		DOMloader[0].style.display = 'block';
+  		if(DOMloader[0]) {
+  			DOMloader[0].style.display = 'block';
+  		}
   	},
   	hideLoader() {
   		let DOMloader = document.getElementsByClassName('loader');
-  		DOMloader[0].style.display = 'none';
+  		if(DOMloader[0]) {
+  			DOMloader[0].style.display = 'none';
+  		}
   	}
   }
 }

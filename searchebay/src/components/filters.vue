@@ -42,6 +42,8 @@ export default {
   },
   watch: {
     searchResults(val) {
+      this.allSellers = [];
+      this.allConditions = [];
       val.forEach(item => {
         if(!this.allSellers.includes(item.seller.username)) {
           this.allSellers.push(item.seller.username);
