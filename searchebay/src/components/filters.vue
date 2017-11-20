@@ -61,6 +61,10 @@ export default {
           this.allConditions.push(item.condition)
         }
       });
+      // Whenvever searchResults changes or whenever it is loaded,
+      // curate the list once based on filterQueries (selected filters).
+      // This will set the initial filtration at least:
+      this.curateList();
     }
   },
   methods: {
@@ -106,6 +110,7 @@ export default {
       this.curateList();
     },
     curateList() {
+      console.log(this.searchResults.length);
       var price = this.selected.price || 1000000000,
           priceFiltered = this.searchResults.filter(item => {
             return Number(item.currentBidPrice.value) < price;
@@ -127,6 +132,7 @@ export default {
       if(selectedConditions.length !== this.allConditions.length) { conditionsList = selectedConditions; }
       if(price !== 1000000000) { nonDefaultPrice = price }
 
+      console.log(conditionsFiltered.length);
       this.$emit('filterTheSearch', conditionsFiltered, nonDefaultPrice, sellersList, conditionsList);
     }
   }
