@@ -33,8 +33,7 @@ export default {
       allSellers: [], // The sellers that appear in the filter
       allConditions: [],
       selected: {
-        priceLow: 0,
-        priceHigh: 1000000000,
+        price: 1000000000,
         sellers: [],
         conditions: []
       }
@@ -60,8 +59,7 @@ export default {
   methods: {
     handlePriceChange(e) {
       let filtered;
-      this.selected.priceLow = 0;
-      this.selected.priceHigh = e.target.value;
+      this.selected.price = e.target.value;
       this.curateList();
     },
     handleSellerSelect(e) {
@@ -101,11 +99,9 @@ export default {
       this.curateList();
     },
     curateList() {
-      var priceLow = this.selected.priceLow || 0,
-          priceHigh = this.selected.priceHigh || 1000000000,
+      var price = this.selected.price || 1000000000,
           priceFiltered = this.searchResults.filter(item => {
-            return Number(item.currentBidPrice.value) >= priceLow && 
-                   Number(item.currentBidPrice.value) < priceHigh;
+            return Number(item.currentBidPrice.value) < price;
           });
 
       var selectedSellers = this.selected.sellers.length ? this.selected.sellers : this.allSellers, // If no sellers are selected, choose the whole list
@@ -118,7 +114,7 @@ export default {
             return selectedConditions.includes(item.condition);
           });
 
-      this.$emit('filterTheSearch', conditionsFiltered);
+      this.$emit('filterTheSearch', conditionsFiltered, price);
     }
   }
 }

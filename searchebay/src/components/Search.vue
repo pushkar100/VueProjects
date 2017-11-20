@@ -28,7 +28,7 @@ export default {
     	total: undefined,
     	cachedRequests: {},
     	cacheHash: undefined,
-    	path: '/'
+    	filterQueries: {}
     }
   },
   components: {
@@ -63,38 +63,36 @@ export default {
   	'$route' (to, from) {
   		/* Whenever route does not change but only parameters change:
   		   Complete initial search: */
-  		if(to.params.q != to.params.from) {
+      var toQuery = to.query,
+          fromQuery = from.query;
+      /* Refresh page only if search terms don't match */
+  		if(toQuery.q != fromQuery.q) {
   			this.initialSearch();
   		}
   	}
   },
   methods: {
   	initialSearch() {
+      console.log('Route:', this.$route, this.$route.query);
   		/* 2. Find out if params were set */
-	  	let routeParams = this.$route.params;
+	  	let routeQuery = this.$route.query;
 	  	this.path = this.$route.path;
-	  	if(routeParams.q) {
+	  	if(routeQuery.q) {
 	  		console.log('Initial search!');
-	  		this.searchTerm = routeParams.q || this.searchTerm;
+	  		this.searchTerm = routeQuery.q || this.searchTerm;
 	  		// Make the call to API (or cache):
 	  		this.fetchAndUseData();
 	  	} else {
 	  		console.log('No initial search done!');
 	  		this.hideLoader(); // Add loader if it is taking time!
 	  	}
-	},
+    },
   	searchItems(e) {
   		e.preventDefault();
   		if(this.searchTerm) {
-  			this.$router.push({ 
-  				name: 'SearchWithParams', 
-  				params: {
-  					q: this.searchTerm,
-  					offset: this.offset,
-  					condition: 'none',
-  					sellers: 'none'
-  				}
-  			});
+        /* Fresh search: Clear all other filters: */
+        let queryObj = { q: this.searchTerm };
+  			this.$router.push({ name: 'Search', query: queryObj });
   		} else {
   			alert('Enter a search term');
   		}
@@ -110,8 +108,14 @@ export default {
   			itemWebUrl: item.itemWebUrl
   		}
   	},
-  	filterResults(filteredList) {
+  	filterResults(filteredList, price) {
   		this.filteredResults = filteredList;
+      this.filterQueries.price = price;
+      /* Update filters (other than search) in route: */
+      /* While watching for $route changes, do not refresh page if new search was not input */
+      let queryObj = Object.assign({}, this.$route.query);
+      queryObj['p'] = price;
+      this.$router.push({ name: 'Search', query: queryObj });
   	},
   	fetchAndUseData() {
   		this.showLoader(); // Add loader if it is taking time!
@@ -138,24 +142,24 @@ export default {
   		}
   	},
   	/* The update inner function: */
-	update(response) {
-		// Save response in cache if it doesn't already exist!
-		this.cachedRequests[this.cacheHash] = this.cachedRequests[this.cacheHash] || response;
-		// Remaining updation: 
-		this.total = response.body.total;
-		this.searchResults = [];
-		this.filteredResults = [];
-		if(response.body.itemSummaries) {
-			response.body.itemSummaries.forEach(item => {
-				let itemData = this.getItemData(item);
-				this.searchResults.push(itemData);
-				this.filteredResults.push(itemData);
-			});
-		} else {
-			alert('No items were returned by this query!');
-		}
-		this.hideLoader();  // Remove loader once data has been retrieved!
-	},
+  	update(response) {
+  		// Save response in cache if it doesn't already exist!
+  		this.cachedRequests[this.cacheHash] = this.cachedRequests[this.cacheHash] || response;
+  		// Remaining updation: 
+  		this.total = response.body.total;
+  		this.searchResults = [];
+  		this.filteredResults = [];
+  		if(response.body.itemSummaries) {
+  			response.body.itemSummaries.forEach(item => {
+  				let itemData = this.getItemData(item);
+  				this.searchResults.push(itemData);
+  				this.filteredResults.push(itemData);
+  			});
+  		} else {
+  			alert('No items were returned by this query!');
+  		}
+  		this.hideLoader();  // Remove loader once data has been retrieved!
+  	},
   	pagination(offset) {
   		this.offset = offset;
   		this.fetchAndUseData();

@@ -17,11 +17,6 @@ export default new Router({
     	name: 'Item',
     	component: Item,
       props: true
-    },
-    {
-      path: '/:q/:price/:condition/:sellers',
-      name: 'SearchWithParams',
-      component: Search
     }
   ]
 })
