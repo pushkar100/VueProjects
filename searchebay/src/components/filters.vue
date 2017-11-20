@@ -39,13 +39,6 @@ export default {
       }
     }
   },
-  mounted() {
-    console.log('Sellers: ', this.filterQueries.sellersList, 'Conditions: ', this.filterQueries.conditionsList);
-
-    this.selected.price = this.filterQueries.price || 1000000000;
-    this.selected.sellers = this.filterQueries.sellersList || [];
-    this.selected.conditions = this.filterQueries.conditionsList || [];
-  },
   watch: {
     searchResults(val) {
       this.allSellers = [];
@@ -64,10 +57,16 @@ export default {
       // Whenvever searchResults changes or whenever it is loaded,
       // curate the list once based on filterQueries (selected filters).
       // This will set the initial filtration at least:
+      this.useFilterQueries();
       this.curateList();
     }
   },
   methods: {
+    useFilterQueries() {
+      this.selected.price = this.filterQueries.price || 1000000000;
+      this.selected.sellers = this.filterQueries.sellersList || [];
+      this.selected.conditions = this.filterQueries.conditionsList || [];
+    },
     handlePriceChange(e) {
       let filtered;
       this.selected.price = e.target.value;

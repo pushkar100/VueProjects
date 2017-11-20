@@ -96,6 +96,7 @@ export default {
   		if(this.searchTerm) {
         /* Fresh search: Clear all other filters: */
         let queryObj = { q: this.searchTerm };
+        this.filterQueries = {}; // Reset all filters for a new search.
   			this.$router.push({ name: 'Search', query: queryObj });
   		} else {
   			alert('Enter a search term');
