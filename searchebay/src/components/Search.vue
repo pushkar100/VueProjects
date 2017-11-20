@@ -5,9 +5,9 @@
 		<input type="submit" value="Search ebay" class="search-submit">
 	</form>
 	<!-- Filters receive the full response from API (searchResults) -->
-	<Filters v-on:filterTheSearch="filterResults" v-bind:searchResults="searchResults"></Filters>
+	<Filters v-on:filterTheSearch="filterResults" :searchResults="searchResults" :filterQueries="filterQueries"></Filters>
 	<!-- Results receive only filtered results (filteredResults) -->
-	<Results v-on:updateOffset="pagination" v-bind:filteredResults="filteredResults" v-bind:limit="limit" v-bind:offset="offset" v-bind:total="total"></Results>
+	<Results v-on:updateOffset="pagination" :filteredResults="filteredResults" :limit="limit" :offset="offset" :total="total"></Results>
   </div>
 </template>
 
@@ -76,7 +76,7 @@ export default {
       console.log('Route:', this.$route, this.$route.query);
   		/* 2. Find out if params were set */
 	  	let routeQuery = this.$route.query;
-	  	this.path = this.$route.path;
+      /* 3. Fetch data upon new search: */
 	  	if(routeQuery.q) {
 	  		console.log('Initial search!');
 	  		this.searchTerm = routeQuery.q || this.searchTerm;
@@ -86,6 +86,10 @@ export default {
 	  		console.log('No initial search done!');
 	  		this.hideLoader(); // Add loader if it is taking time!
 	  	}
+      /* 4. Update filter queries based on route: */
+      if(routeQuery.p) { this.filterQueries.price = routeQuery.p; }
+      if(routeQuery.s) { this.filterQueries.sellersList = routeQuery.s.split('|'); }
+      if(routeQuery.c) { this.filterQueries.conditionsList = routeQuery.c.split('|'); }
     },
   	searchItems(e) {
   		e.preventDefault();
@@ -108,13 +112,26 @@ export default {
   			itemWebUrl: item.itemWebUrl
   		}
   	},
-  	filterResults(filteredList, price) {
-  		this.filteredResults = filteredList;
-      this.filterQueries.price = price;
+  	filterResults(filteredList, nonDefaultPrice, sellersList, conditionsList) {
       /* Update filters (other than search) in route: */
       /* While watching for $route changes, do not refresh page if new search was not input */
       let queryObj = Object.assign({}, this.$route.query);
-      queryObj['p'] = price;
+
+      this.filteredResults = filteredList;
+
+      if(nonDefaultPrice) { 
+        this.filterQueries.price = nonDefaultPrice;
+        queryObj['p'] = nonDefaultPrice; 
+      }
+      if(sellersList) { 
+        this.filterQueries.sellersList = sellersList;
+        queryObj['s'] = sellersList.join('|'); 
+      }
+      if(conditionsList) { 
+        this.filterQueries.conditionsList = conditionsList;
+        queryObj['c'] = conditionsList.join('|'); 
+      }
+
       this.$router.push({ name: 'Search', query: queryObj });
   	},
   	fetchAndUseData() {

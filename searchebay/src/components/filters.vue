@@ -3,20 +3,20 @@
     <div class="filter-div price-filter">
       <h2 class="filter-hdr price-filter-hdr">Price Filter</h2>
       <div v-for="value in allPriceCaps">
-        <input v-on:click="handlePriceChange" type="radio" name="priceFilter" :value="value" class="filter-item"> {{value === 1000000000 ? 'Any Value' : 'Below $' + value}}
+        <input v-model="selected.price" v-on:change="handlePriceChange" type="radio" name="priceFilter" :value="value" class="filter-item"> {{value === 1000000000 ? 'Any Value' : 'Below $' + value}}
       </div>
     </div>
     <div class="filter-div condition-filter">
       <h2 class="filter-hdr condition-filter-hdr">Condition</h2>
       <div v-for="condition in allConditions">
-        <input v-on:click="handleConditionSelect" type="checkbox" :value="condition" class="filter-item">
+        <input v-model="selected.conditions" v-on:click="handleConditionSelect" type="checkbox" :value="condition" class="filter-item">
         {{condition || 'Unknown'}}
       </div>
     </div>
     <div class="filter-div seller-filter">
       <h2 class="filter-hdr seller-filter-hdr">Sellers</h2>
       <div v-for="seller in allSellers">
-        <input v-on:click="handleSellerSelect" type="checkbox" :value="seller" class="filter-item">
+        <input v-model="selected.sellers" v-on:click="handleSellerSelect" type="checkbox" :value="seller" class="filter-item">
         {{seller}}
       </div>
     </div>
@@ -26,7 +26,7 @@
 <script>
 export default {
   name: 'Filters',
-  props: ['searchResults'],
+  props: ['searchResults', 'filterQueries'],
   data() {
     return {
       allPriceCaps: [ 10, 20, 50, 100, 200, 500, 1000, 1000000000 ], // The prices on filter
@@ -38,6 +38,13 @@ export default {
         conditions: []
       }
     }
+  },
+  mounted() {
+    console.log('Sellers: ', this.filterQueries.sellersList, 'Conditions: ', this.filterQueries.conditionsList);
+
+    this.selected.price = this.filterQueries.price || 1000000000;
+    this.selected.sellers = this.filterQueries.sellersList || [];
+    this.selected.conditions = this.filterQueries.conditionsList || [];
   },
   watch: {
     searchResults(val) {
@@ -114,7 +121,13 @@ export default {
             return selectedConditions.includes(item.condition);
           });
 
-      this.$emit('filterTheSearch', conditionsFiltered, price);
+      /* Emit filters selected and the filtered data back to parent: */
+      var nonDefaultPrice, sellersList, conditionsList;
+      if(selectedSellers.length !== this.allSellers.length) { sellersList = selectedSellers; }
+      if(selectedConditions.length !== this.allConditions.length) { conditionsList = selectedConditions; }
+      if(price !== 1000000000) { nonDefaultPrice = price }
+
+      this.$emit('filterTheSearch', conditionsFiltered, nonDefaultPrice, sellersList, conditionsList);
     }
   }
 }
@@ -131,7 +144,7 @@ export default {
 
 .filter-div {
   min-height: 50px;
-  max-height: 160px;
+  max-height: 260px;
   overflow: scroll;
   padding: 5px;
   border-radius: 5px;
