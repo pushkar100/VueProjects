@@ -2,20 +2,20 @@
   <div v-if="searchResults.length" class="filters">
     <div class="filter-div price-filter">
       <h2 class="filter-hdr price-filter-hdr">Price Filter</h2>
-      <div v-for="value in allPriceCaps">
+      <div v-for="value in allPriceCaps" :key="value.id">
         <input v-model="selected.price" v-on:change="handlePriceChange" type="radio" name="priceFilter" :value="value" class="filter-item"> {{value === 1000000000 ? 'Any Value' : 'Below $' + value}}
       </div>
     </div>
     <div class="filter-div condition-filter">
       <h2 class="filter-hdr condition-filter-hdr">Condition</h2>
-      <div v-for="condition in allConditions">
+      <div v-for="condition in allConditions" :key="condition.id">
         <input v-model="selected.conditions" v-on:click="handleConditionSelect" type="checkbox" :value="condition" class="filter-item">
         {{condition || 'Unknown'}}
       </div>
     </div>
     <div class="filter-div seller-filter">
       <h2 class="filter-hdr seller-filter-hdr">Sellers</h2>
-      <div v-for="seller in allSellers">
+      <div v-for="seller in allSellers" :key="seller.id">
         <input v-model="selected.sellers" v-on:click="handleSellerSelect" type="checkbox" :value="seller" class="filter-item">
         {{seller}}
       </div>
@@ -68,18 +68,15 @@ export default {
       this.selected.conditions = this.filterQueries.conditionsList || [];
     },
     handlePriceChange(e) {
-      let filtered;
       this.selected.price = e.target.value;
       this.curateList();
     },
     handleSellerSelect(e) {
-      let filtered,
-          sellerName = e.target.value;
+      let sellerName = e.target.value;
       if(e.target.checked) {
         // Add item to selected sellers
         if(!this.selected.sellers.includes(sellerName)) {
           this.selected.sellers.push(sellerName);
-          console.log(sellerName);
         }
       } else {
         // Remove item from selected sellers
@@ -91,13 +88,11 @@ export default {
       this.curateList();
     },
     handleConditionSelect(e) {
-      let filtered,
-          conditionName = e.target.value;
+      let conditionName = e.target.value;
       if(e.target.checked) {
         // Add item to selected sellers
         if(!this.selected.conditions.includes(conditionName)) {
           this.selected.conditions.push(conditionName);
-          console.log(conditionName);
         }
       } else {
         // Remove item from selected sellers
@@ -109,7 +104,6 @@ export default {
       this.curateList();
     },
     curateList() {
-      console.log(this.searchResults.length);
       var price = this.selected.price || 1000000000,
           priceFiltered = this.searchResults.filter(item => {
             return Number(item.currentBidPrice.value) < price;
@@ -131,7 +125,6 @@ export default {
       if(selectedConditions.length !== this.allConditions.length) { conditionsList = selectedConditions; }
       if(price !== 1000000000) { nonDefaultPrice = price }
 
-      console.log(conditionsFiltered.length);
       this.$emit('filterTheSearch', conditionsFiltered, nonDefaultPrice, sellersList, conditionsList);
     }
   }

@@ -19,7 +19,7 @@
       <div class="image-wrapper">
         <img :src="itemData.image.imageUrl" alt="">
       </div>
-      <div v-for="images in itemData.additionalImages" class="image-wrapper">
+      <div v-for="images in itemData.additionalImages" :key="images.id" class="image-wrapper">
         <img :src="images.imageUrl" alt="">
       </div>
     </div>
@@ -42,7 +42,6 @@ export default {
 
     if(_appToken && !_hasExpired) {
       this.appToken = _appToken;
-      console.log('Session storage App Key used');
       // Fetch item data:
       this.getItemData();
     } else {
@@ -54,7 +53,6 @@ export default {
         this.appToken = JSON.parse(response.body).access_token;
         sessionStorage.setItem('appToken', this.appToken);
         sessionStorage.setItem('expiry', expiry);
-        console.log('HTTP Response to get App Key made, Saved into session storage');
         // Fetch item data:
         this.getItemData();
       });

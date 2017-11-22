@@ -13,9 +13,9 @@ export default new Router({
       component: Search
     },
     {
-    	path: '/item/:id',
-    	name: 'Item',
-    	component: Item,
+      path: '/item/:id',
+      name: 'Item',
+      component: Item,
       props: true
     }
   ]

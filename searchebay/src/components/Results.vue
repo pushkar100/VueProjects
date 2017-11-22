@@ -20,7 +20,7 @@
       <div class="results-info">Showing {{offset}}-{{offset + limit}} out of {{total}} results</div>
     </div>
 
-    <div v-for="item in filteredResults" class="search-results">
+    <div v-for="item in filteredResults" :key="item.id" class="search-results">
       <div class="search-results-item">
         <div class="clearfix">
           <div class="search-results-item-img-wrpr">
