@@ -4,6 +4,9 @@ import Vue from 'vue'
 import App from './App'
 import router from './router'
 
+/* Import normalize stylesheet that applies site-wide */
+import 'normalize.css';
+
 /* HTTP Requests using Vue Resource(3rd party) */
 import VueResource from 'vue-resource'
 /* Use vueResource as middleware */

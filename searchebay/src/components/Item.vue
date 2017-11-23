@@ -3,9 +3,9 @@
     <div class="item-id">ID: {{itemData.itemId}}</div>
     <div class="item-title">{{itemData.title}}</div>
     <div class="clearfix">
-      <div class="float-item">{{itemData.condition}}</div>
-      <div class="float-item">{{itemData.brand}}</div>
-      <div class="float-item">
+      <div class="item-float">{{itemData.condition}}</div>
+      <div class="item-float">{{itemData.brand}}</div>
+      <div class="item-float">
         <span>Seller: {{itemData.seller.username}} |</span>
         <span>Rating: {{itemData.seller.feedbackPercentage}}% | </span>
         <span>Score: {{itemData.seller.feedbackScore}}</span>
@@ -83,66 +83,73 @@ export default {
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
-.item-id {
-  color: #777;
-  font-size: 9px;
-  text-align: right;
+<style lang="less" scoped>
+@import '../assets/less/settings.less';
+
+// Item specific variables:
+@item-id-color      : #777777;
+@float-item-bkgnd   : #34495e;
+@item-buy-color     : #27ae60;
+
+.item {
+  &-id {
+    font-size: 9px;
+    text-align: right;
+    color: @item-id-color;
+  }
+  &-title {
+    margin-bottom: 20px;
+    color: @fg-color-blue;
+    font-size: @font-size-xl;
+  }
+  &-float {
+    float: left;
+    padding: 3px 10px;
+    margin-right: 40px;
+    color: @fg-color-white;
+    font-size: @font-size-s;
+    background-color: @float-item-bkgnd;
+    border-radius: @border-radius;
+  }
+  &-price {
+    float: left;
+    margin-top: 20px;
+    font-size: @font-size-xl;
+    color: @item-buy-color;
+  }
+  &-buy {
+    float: left;
+    padding: 3px 5px;
+    margin-top: 16px;
+    margin-left: 20px;
+    cursor: pointer;
+    text-decoration: none;
+    color: @fg-color-white;
+    font-size: @font-size-xl;
+    background: @item-buy-color;
+    border-radius: @border-radius-s;
+  }
 }
 
-.item-title {
-  color: #2980b9;
-  font-size: 24px;
-  margin-bottom: 20px;
-}
+.image {
+  &-wrapper {
+    float: left;
+    margin: 10px;
+    width: 360px;
+    height: 360px;
+    position: relative;
+    border: 1px solid @border-color;
 
-.float-item {
-  float: left;
-  margin-right: 40px;
-  font-size: 13px;
-  background-color: #34495e;
-  color: #fff;
-  padding: 3px 10px;
-  border-radius: 5px;
-}
-
-.item-price {
-  float: left;
-  font-size: 24px;
-  margin-top: 20px;
-  color: #27ae60;
-}
-
-.item-buy {
-  float: left;
-  margin-top: 20px;
-  font-size: 20px;
-  margin-left: 20px;
-  padding: 3px 5px;
-  border-radius: 3px;
-  background: #2ecc71;
-  color: #fff;
-  cursor: pointer;
-  text-decoration: none;
-}
-
-.image-wrapper {
-  float: left;
-  width: 360px;
-  height: 360px;
-  position: relative;
-  margin: 10px;
-  border: 1px solid #ccc;
-}
-
-.image-wrapper img {
-  position: absolute;
-  top: -100%;
-  left: -100%;
-  right: -100%;
-  bottom: -100%;
-  max-width: 90%;
-  max-height: 90%;
-  margin: auto;
+    img {
+      position: absolute;
+      top: -100%;
+      left: -100%;
+      right: -100%;
+      bottom: -100%;
+      max-width: 90%;
+      max-height: 90%;
+      margin: auto;
+    }
+  }
 }
 </style>

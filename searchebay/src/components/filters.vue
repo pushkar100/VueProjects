@@ -132,7 +132,9 @@ export default {
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
+<style lang="less" scoped>
+@import '../assets/less/settings.less';
+
 .filters {
   float: left;
   width: 20%;
@@ -140,23 +142,26 @@ export default {
   margin-right: 16px;
 }
 
-.filter-div {
-  min-height: 50px;
-  max-height: 260px;
-  overflow: scroll;
-  padding: 5px;
-  border-radius: 5px;
-  background: #ecf0f1;
-  margin-bottom: 10px;
-}
-
-.filter-hdr {
-  color: #2980b9;
-  font-weight: 600;
-  padding: 5px 0;
-}
-
-.filter-item {
-  margin-bottom: 10px;
+.filter {
+  &-div {
+    min-height: 50px;
+    max-height: 260px;
+    overflow: scroll;
+    padding: 5px 10px;
+    margin-bottom: 10px;
+    border-radius: @border-radius-s;
+    border: 1px dotted @border-color;
+    background: @bg-color-grey;
+  }
+  &-hdr {
+    padding: 5px 0;
+    margin: 0;
+    color: @fg-color-blue;
+    font-size: @font-size-l;
+    font-weight: @font-weight-bold;
+  }
+  &-item {
+    margin-bottom: 10px;
+  }
 }
 </style>

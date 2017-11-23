@@ -193,23 +193,30 @@ export default {
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
-.search-input {
-	width: 80%;
+<style lang="less" scoped>
+@import '../assets/less/settings.less';
+
+// Search specific variables:
+@search-font-size: 18px;
+
+.search {
+  &-input {
+    width: 80%;
     padding: 10px;
-    font-size: 18px;
     height: 24px;
-    color: #2c3e50;
     vertical-align: middle;
-}
-.search-submit {
-	height: 45px;
+    font-size: @search-font-size;
+    color: @fg-color-dark-blue;
+  }
+  &-submit {
+    height: 45px;
     width: 17%;
     vertical-align: middle;
     border: 0;
-    color: #fff;
+    color: @fg-color-white;
     font-size: 18px;
-    background: #2980b9;
+    background: @bg-color-blue;
     cursor: pointer;
+  }
 }
 </style>

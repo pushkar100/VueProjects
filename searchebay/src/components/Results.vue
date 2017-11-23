@@ -1,15 +1,15 @@
 <template>
   <div class="results">
     <div v-if="filteredResults.length" class="results-applied-filter">
-      <label class="applied-filter-item">
+      <label class="results-applied-filter-item">
         <input v-on:click="sortByPrice" type="radio" name="applied-filter" value="1"> Price: Low to High</label>
-      <label class="applied-filter-item">
+      <label class="results-applied-filter-item">
         <input v-on:click="sortByPrice" type="radio" name="applied-filter" value="-1"> Price: High to Low
       </label>
-      <label class="applied-filter-item">
+      <label class="results-applied-filter-item">
         <input v-on:click="sortByScore" type="radio" name="applied-filter" value="1"> Score: Low to High
       </label>
-      <label class="applied-filter-item">
+      <label class="results-applied-filter-item">
         <input v-on:click="sortByScore" type="radio" name="applied-filter" value="-1"> Score: High to Low
       </label>
     </div>
@@ -31,8 +31,8 @@
           <div class="search-results-item-condition">{{item.condition}}</div>
         </div>
         <div class="clearfix">
-          <div class="search-results-item-sellerprcnt">Score: {{item.seller.feedbackPercentage}}%</div>
           <div class="search-results-item-seller">{{item.seller.username}}</div>
+          <div class="search-results-item-sellerprcnt">({{item.seller.feedbackPercentage}}%)</div>
         </div>
         <div class="clearfix">
           <span class="search-results-item-price">{{item.currentBidPrice.currency}} {{item.currentBidPrice.value}}</span>
@@ -88,153 +88,150 @@ export default {
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
+<style lang="less" scoped>
+@import '../assets/less/settings.less';
+
+// Results specific variables:
+@seller-percent-color      : #27ae60;
+@view-details-bkgnd        : #f1c40f;
+
 .results {
   float: left;
   width: 78%;
+  
+  &-info {
+    text-align: center;
+    font-size: 13px;
+    padding-top: 5px;
+    color: @fg-color-blue;
+  }
+  &-applied-filter {
+    padding: 5px 10px;
+    margin-top: 15px;
+    border: 1px dotted @border-color-dark-blue;
+    border-radius: @border-radius-s;
+
+    &-item {
+      margin-right: 30px;
+    }
+  }
 }
 
-.search-results {
-  margin: 15px 0;
-}
-.search-results-item {
-  padding: 5px;
-  background: #E1F5FE;
-  color: #263238;
-  margin-bottom: 5px;
-  border-radius: 3px;
+.search {
+  &-results {
+    margin: 15px 0;
+
+    &-none {
+      padding: 40px 0;
+      text-align: center;
+      color: @fg-color-grey;
+    }
+    &-item {
+      padding: 5px;
+      margin-bottom: 5px;
+      color: @fg-color-blue;
+      border-radius: @border-radius-s;
+      border: 1px dotted @border-color-dark-blue;
+
+      &-img {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        margin: 15% auto;
+        max-height: 70%;
+        max-width: 70%;
+
+        &-wrpr {
+          float: left;
+          width: 90px;
+          height: 90px;
+          margin-right: 15px;
+          position: relative;
+        }
+      }
+      &-title {
+        float: left;
+        width: 85%;
+        font-size: @font-size-l;
+        color: @fg-color-dark-blue;
+      }
+      &-id {
+        float: left;
+        margin-top: 5px;
+        width: 85%;
+        font-size: @font-size-xs;
+      }
+      &-condition {
+        float: left;
+        padding: 3px;
+        margin-top: 10px;
+        border: 1px solid @border-color-blue;
+      }
+      &-seller {
+        float: left;
+        margin: 10px;
+        text-transform: capitalize;
+        color: @fg-color-blue;
+        font-weight: @font-weight-bold;
+      }
+      &-sellerprcnt {
+        float: left;
+        margin: 10px;
+        text-transform: capitalize;
+        color: @seller-percent-color;
+      }
+      &-price {
+        float: left;
+        padding: 5px 10px;
+        width: 140px;
+        font-weight: @font-weight-bold;
+      }
+      &-buy {
+        float: right;
+        padding: 5px 10px;
+        margin: 0 10px;
+        vertical-align: middle;
+        text-decoration: none;
+        cursor: pointer;
+        background: @bg-color-blue;
+        color: @bg-color-white;
+      }
+      &-view {
+        float: right;
+        padding: 5px 10px;
+        cursor: pointer;
+        background: @view-details-bkgnd;
+      }
+    }
+  }
 }
 
-.search-results-item-img-wrpr {
-  float: left;
-  width: 90px;
-  height: 90px;
-  margin-right: 15px;
-  position: relative;
-}
-
-.search-results-item-img {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  margin: 15% auto;
-  max-height: 70%;
-  max-width: 70%;
-}
-
-.search-results-item-title {
-  float: left;
-  font-size: 18px;
-  color: #34495e;
-  width: 85%;
-}
-
-.search-results-item-id {
-  margin-top: 5px;
-  float: left;
-  font-size: 11px;
-  width: 85%;
-}
-
-.search-results-item-condition {
-  float: left;
-  margin-top: 5px;
-  border-radius: 3px;
-  padding: 3px;
-  border: 1px solid #2980b9;
-}
-
-.search-results-item-seller {
-  float: right;
-  text-transform: capitalize;
-  margin-left: 20px;
-  padding: 3px;
-  color: #2980b9;
-  margin-bottom: 10px;
-}
-
-.search-results-item-sellerprcnt {
-  float: right;
-  text-transform: capitalize;
-  margin-left: 20px;
-  padding: 3px;
-  color: #27ae60;
-  margin-bottom: 10px;
-}
-
-.search-results-item-price {
-  float: left;
-  padding: 5px 10px;
-  font-weight: bold;
-  width: 140px;
-}
-
-.search-results-item-buy {
-  float: left;
-  vertical-align: middle;
-  margin: 0 10px;
-  padding: 5px 10px;
-  background: #27ae60;
-  color: #fff;
-text-decoration: none;
-  cursor: pointer;
-}
-
-.search-results-item-view {
-  float: right;
-  padding: 5px 10px;
-  background: #f1c40f;
-  cursor: pointer;
-}
-
-.search-results-none {
-  padding: 40px 0;
-  text-align: center;
-  color: #444;
-}
-
-.results-applied-filter {
-  margin-top: 15px;
-  background: #ecf0f1;
-  padding: 5px;
-  border-radius: 5px;
-}
-
-.applied-filter-item {
-  margin-right: 30px;
+.filter {
+  &-prev {
+    float: left;
+    padding: 5px 7px;
+    cursor: pointer;
+    border: 1px solid @border-color-dark-blue;
+    color: @fg-color-dark-blue;
+  }
+  &-next {
+    float: right;
+    padding: 5px 7px;
+    cursor: pointer;
+    color: @fg-color-blue;
+    border: 1px dashed @border-color-blue;
+    border-radius: @border-radius-s;
+  }
 }
 
 .paginate {
   margin: 10px 0;
 }
 
-.filter-prev {
-  float: left;
-  border: 1px solid #2c3e50;
-  color: #2c3e50;
-  padding: 5px 7px;
-  cursor: pointer;
-}
-
-.filter-next {
-  float: right;
-  border: 1px solid #2c3e50;
-  color: #2c3e50;
-  padding: 5px 7px;
-  cursor: pointer;
-}
-
-.results-info {
-  text-align: center;
-  font-size: 13px;
-  padding-top: 5px;
-  color: #95a5a6;
-}
-
 .route-link {
   text-decoration: none;
-  color: #444;
+  color: @fg-color-dark-blue;
 }
 </style>
