@@ -3,7 +3,7 @@
 A repository that holds all vue projects.
 
 Currently Listed Vue Projects:
-1. Search Ebay
+1. [Search Ebay](#search-ebay)
 
 # Search Ebay
 
