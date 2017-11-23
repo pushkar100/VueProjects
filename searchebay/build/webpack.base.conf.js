@@ -50,7 +50,7 @@ module.exports = {
         include: [resolve('src'), resolve('test')]
       },
       {
-        test: /\.(css|less)$/,
+        test: /\.less$/,
         use: [{
             loader: "style-loader" // creates style nodes from JS strings
         }, {
