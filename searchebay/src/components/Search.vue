@@ -63,8 +63,8 @@ export default {
   		   Complete initial search: */
       var toQuery = to.query,
           fromQuery = from.query;
-      /* Refresh page only if search terms don't match */
-      if(toQuery.q != fromQuery.q) {
+      /* Refresh page only if search terms don't match or offset changes (triggering new search) */
+      if(toQuery.q != fromQuery.q || toQuery.o != fromQuery.o) {
         this.initialSearch();
       }
     }
@@ -73,7 +73,9 @@ export default {
     initialSearch() {
       /* 2. Find out if params were set */
       let routeQuery = this.$route.query;
-      /* 3. Fetch data upon new search: */
+      /* 3. Update offset: */
+      if(routeQuery.o) { this.offset = Number(routeQuery.o); }
+      /* 4. Fetch data upon new search: */
       if(routeQuery.q) {
         this.searchTerm = routeQuery.q || this.searchTerm;
         // Make the call to API (or cache):
@@ -81,7 +83,7 @@ export default {
       } else {
         this.hideLoader(); // Add loader if it is taking time!
       }
-      /* 4. Update filter queries based on route: */
+      /* 5. Update filter queries based on route: */
       if(routeQuery.p) { this.filterQueries.price = routeQuery.p; }
       if(routeQuery.s) { this.filterQueries.sellersList = routeQuery.s.split('|'); }
       if(routeQuery.c) { this.filterQueries.conditionsList = routeQuery.c.split('|'); }
@@ -119,13 +121,19 @@ export default {
         this.filterQueries.price = nonDefaultPrice;
         queryObj['p'] = nonDefaultPrice; 
       }
+      
       if(sellersList) { 
         this.filterQueries.sellersList = sellersList;
         queryObj['s'] = sellersList.join('|'); 
+      } else {
+        delete queryObj['s'];
       }
+
       if(conditionsList) { 
         this.filterQueries.conditionsList = conditionsList;
         queryObj['c'] = conditionsList.join('|'); 
+      } else {
+        delete queryObj['c'];
       }
 
       this.$router.push({ name: 'Search', query: queryObj });
@@ -173,8 +181,22 @@ export default {
       this.hideLoader();  // Remove loader once data has been retrieved!
     },
     pagination(offset) {
-      this.offset = offset;
-      this.fetchAndUseData();
+      let queryObj = Object.assign({}, this.$route.query);
+
+      this.offset = offset; // update offset
+      this.fetchAndUseData(); // Fetch new data from API (or cache)
+
+      /* Update offset in route (after fetching the page successfully) */
+      queryObj['o'] = offset;
+      /* Price/Sellers/Conditions are only used for one offset - new data comes in when offset changes */
+      this.filterQueries.price = 1000000000;
+      this.filterQueries.sellersList = [];
+      this.filterQueries.conditionsList = [];
+      delete queryObj['s'];
+      delete queryObj['c'];
+      delete queryObj['p'];
+
+      this.$router.push({ name: 'Search', query: queryObj });
     },
     showLoader() {
       let DOMloader = document.getElementsByClassName('loader');

@@ -209,13 +209,7 @@ export default {
 }
 
 .filter {
-  &-prev {
-    float: left;
-    padding: 5px 7px;
-    cursor: pointer;
-    border: 1px solid @border-color-dark-blue;
-    color: @fg-color-dark-blue;
-  }
+  &-prev,
   &-next {
     float: right;
     padding: 5px 7px;
@@ -223,6 +217,9 @@ export default {
     color: @fg-color-blue;
     border: 1px dashed @border-color-blue;
     border-radius: @border-radius-s;
+  }
+  &-prev {
+    float: left;
   }
 }
 
