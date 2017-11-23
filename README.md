@@ -18,7 +18,7 @@ Currently Listed Vue Projects:
 - On the left, a filter section is available to filter each set of products based on price or seller(s) or condition(s) of the items.
 - Finally, to view a product, we can click on the "View details" of a particular product or if we wish to go to ebay and bid for it, we can click on "buy".
 
-
+[![search-ebay-gif-full.gif](https://s1.gifyu.com/images/search-ebay-gif-full.gif)](https://gifyu.com/image/pNHf)
 
 View the [demo](http://pushkardk.com/searchebay/).
 
