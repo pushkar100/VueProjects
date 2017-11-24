@@ -54,4 +54,4 @@ While using the app, fresh data is not requested from the Ebay API unless the se
 
 ### Link
 
-A *live demo* of the app can be viewed [here](http://pushkardk.com/searchebay/).
+A *live demo* of the app can be viewed [here @pushkardk.com](http://pushkardk.com/searchebay/).
