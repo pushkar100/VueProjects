@@ -10,15 +10,14 @@ A repository that holds all Vue JS projects. Currently listed projects:
 
 ### Usage
 
+[![search-ebay-gif-full-800.gif](https://s1.gifyu.com/images/search-ebay-gif-full-800.gif)](https://gifyu.com/image/pNHt)
+
 - The app contains a search bar to search for any product or brand that has been listed on ebay.
 - For each search, a list of products (response) is shown below the search bar, to the right.
 - An applied filters section rests on top of the products. We may choose to order the results based on either the current bidding price or seller score (high-low & low-high).
 - Each search yields a limited set of products and in order to fetch more, we can use pagination (next/prev) option. This will fetch more matching products from Ebay and display them.
 - On the left, a filter section is available to filter each set of products based on price or seller(s) or condition(s) of the items.
 - Finally, to view a product, we can click on the "View details" of a particular product or if we wish to go to ebay and bid for it, we can click on "buy".
-
-
-[![search-ebay-gif-full-800.gif](https://s1.gifyu.com/images/search-ebay-gif-full-800.gif)](https://gifyu.com/image/pNHt)
 
 View the [demo](http://pushkardk.com/searchebay/).
 
