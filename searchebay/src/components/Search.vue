@@ -26,7 +26,6 @@ export default {
       limit: 50,
       offset: 0,
       total: undefined,
-      cachedRequests: {},
       cacheHash: undefined,
       filterQueries: {}
     }
@@ -147,8 +146,9 @@ export default {
         'offset=' + this.offset
       ].join('');
 
-      if(this.cachedRequests[this.cacheHash]) {
-        this.update(this.cachedRequests[this.cacheHash]);
+      var cache = this.$store.getters.fetchCache;
+      if(cache[this.cacheHash]) {
+        this.update(cache[this.cacheHash]); // Send cached value as response data
       } else {
         this.$http.get(
           'https://api.ebay.com/buy/browse/v1/item_summary/search',
@@ -162,9 +162,9 @@ export default {
       }
     },
     /* The update inner function: */
-    update(response) {
+    update(response) { // Response = new data OR cached data
       // Save response in cache if it doesn't already exist!
-      this.cachedRequests[this.cacheHash] = this.cachedRequests[this.cacheHash] || response;
+      this.$store.commit('addToCache', { cacheHash: this.cacheHash, response: response });
       // Remaining updation: 
       this.total = response.body.total;
       this.searchResults = [];
