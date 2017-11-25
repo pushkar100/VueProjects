@@ -20,5 +20,10 @@ export default new Vuex.Store({
 				state.cache[payload.cacheHash] = payload.response;
 			}
 		}
+	},
+	actions: {
+		addToCache: (context, payload) => {
+			context.commit('addToCache', payload);
+		}
 	}
 });

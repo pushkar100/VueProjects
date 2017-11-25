@@ -164,7 +164,7 @@ export default {
     /* The update inner function: */
     update(response) { // Response = new data OR cached data
       // Save response in cache if it doesn't already exist!
-      this.$store.commit('addToCache', { cacheHash: this.cacheHash, response: response });
+      this.$store.dispatch('addToCache', { cacheHash: this.cacheHash, response: response });
       // Remaining updation: 
       this.total = response.body.total;
       this.searchResults = [];
