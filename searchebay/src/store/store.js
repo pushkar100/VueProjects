@@ -58,6 +58,25 @@ export default new Vuex.Store({
 					});
 				}
 			});
+		},
+		fetchData: (context, payload) => {
+			return new Promise((resolve, reject) => {
+				Vue.http.get(
+					'https://api.ebay.com/buy/browse/v1/item_summary/search',
+					{
+						params: {
+							q: payload.searchTerm,
+							limit: payload.limit, 
+							offset: payload.offset 
+						},
+						headers: { 'Authorization': 'Bearer ' + context.state.AppToken }
+					}
+				).then(response => {
+					resolve(response);
+				}).catch(() => {
+					reject();
+				});
+			})
 		}
 	}
 });

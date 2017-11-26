@@ -134,15 +134,15 @@ export default {
       if(cache[this.cacheHash]) {
         this.update(cache[this.cacheHash]); // Send cached value as response data
       } else {
-        this.$http.get(
-          'https://api.ebay.com/buy/browse/v1/item_summary/search',
-          {
-            params: {
-              q: this.searchTerm, limit: this.limit, offset: this.offset 
-            },
-            headers: { 'Authorization': 'Bearer ' + this.$store.getters.fetchAppToken }
-          }
-        ).then(this.update);
+        /* Fetch new data */
+        let data = this.$store.dispatch('fetchData', { 
+          searchTerm: this.searchTerm, 
+          limit: this.limit, 
+          offset: this.offset 
+        });
+        data.then(response => {
+          this.update(response);
+        })
       }
     },
     /* The update inner function: */
