@@ -22,7 +22,6 @@ export default {
       searchTerm: '',
       searchResults: [],
       filteredResults: [],
-      appToken: '',
       limit: 50,
       offset: 0,
       total: undefined,
@@ -36,25 +35,10 @@ export default {
   },
   created() {
     this.showLoader(); // Add loader if it is taking time!
-    /* 1. Fetch app token */
-    let _appToken = sessionStorage.getItem('appToken'),
-        _expiry   = new Date(sessionStorage.getItem('expiry')),
-        _hasExpired = _expiry.getTime() < (new Date()).getTime();
-
-    if(_appToken && !_hasExpired) {
-      this.appToken = _appToken;
+    var appToken = this.$store.dispatch('AppToken'); // Returns a promise
+    appToken.then(() => {
       this.initialSearch();
-    } else {
-      let expiry = new Date();
-      expiry.setMinutes(expiry.getMinutes() + 20); // 20 minutes
-      this.$http.get('http://pushkardk.com/searchebay/get-app-token.php')
-        .then(response => {
-          this.appToken = JSON.parse(response.body).access_token;
-          sessionStorage.setItem('appToken', this.appToken);
-          sessionStorage.setItem('expiry', expiry);
-          this.initialSearch();
-        });
-    }
+    })
   },
   watch: {
     '$route' (to, from) {
@@ -156,7 +140,7 @@ export default {
             params: {
               q: this.searchTerm, limit: this.limit, offset: this.offset 
             },
-            headers: { 'Authorization': 'Bearer ' + this.appToken }
+            headers: { 'Authorization': 'Bearer ' + this.$store.getters.fetchAppToken }
           }
         ).then(this.update);
       }
