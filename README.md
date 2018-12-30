@@ -10,7 +10,7 @@ A repository that holds all Vue JS projects. Currently listed projects:
 
 ### Usage
 
-[![search-ebay-gif-full-800.gif](https://s1.gifyu.com/images/search-ebay-gif-full-800.gif)](https://gifyu.com/image/pNHt)
+![Example Gif](https://i.ibb.co/0D782B8/ezgif-com-resize.gif)
 
 - The app contains a search bar to search for any product or brand that has been listed on ebay.
 - For each search, a list of products (response) is shown below the search bar, to the right.
